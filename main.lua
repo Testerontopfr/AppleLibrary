@@ -14,34 +14,44 @@ end
 function lib:init(ti, dosplash, visiblekey, deleteprevious)
     if syn then
         
-         cg = game:GetService("CoreGui")
-        if cg:FindFirstChild("ScreenGui") and deleteprevious then
-           tp(cg.ScreenGui.main, cg.ScreenGui.main.Position + UDim2.new(0,0,2,0), 0.5)
-            game:GetService("Debris"):AddItem(cg.ScreenGui, 1)
-      end
+-- CoreGui / syn protection block
+local cg = game:GetService("CoreGui")
 
-         -- main
-        scrgui = Instance.new("ScreenGui")
-        syn.protect_gui(scrgui)
-        scrgui.Parent = game:GetService("CoreGui")
-    elseif gethui then
-        if gethui():FindFirstChild("ScreenGui") and deleteprevious then
-            gethui().ScreenGui.main:TweenPosition(gethui().ScreenGui.main.Position + UDim2.new(0,0,2,0), "InOut", "Quart", 0.5)
-            game:GetService("Debris"):AddItem(gethui().ScreenGui, 1)
-        end
-
-        -- main
-         scrgui = Instance.new("ScreenGui")
-        scrgui.Parent = gethui()
-    else
-        cg = game:GetService("CoreGui")
-        if cg:FindFirstChild("ScreenGui") and deleteprevious then
-            tp(cg.ScreenGui.main, cg.ScreenGui.main.Position + UDim2.new(0,0,2,0), 0.5)
-            game:GetService("Debris"):AddItem(cg.ScreenGui, 1)
-        end
-         scrgui = Instance.new("ScreenGui")
-        scrgui.Parent = cg
+if syn then
+    local existing = cg:FindFirstChild("ScreenGui")
+    if existing and existing:FindFirstChild("main") and deleteprevious then
+        tp(existing.main, existing.main.Position + UDim2.new(0, 0, 2, 0), 0.5)
+        game:GetService("Debris"):AddItem(existing, 1)
     end
+
+    -- create new ScreenGui
+    scrgui = Instance.new("ScreenGui")
+    syn.protect_gui(scrgui)
+    scrgui.Parent = cg
+
+elseif gethui then
+    local hui = gethui()
+    if hui and hui:FindFirstChild("ScreenGui") and hui.ScreenGui:FindFirstChild("main") and deleteprevious then
+        hui.ScreenGui.main:TweenPosition(hui.ScreenGui.main.Position + UDim2.new(0, 0, 2, 0), "InOut", "Quart", 0.5)
+        game:GetService("Debris"):AddItem(hui.ScreenGui, 1)
+    end
+
+    -- create new ScreenGui
+    scrgui = Instance.new("ScreenGui")
+    scrgui.Parent = hui
+
+else
+    local existing = cg:FindFirstChild("ScreenGui")
+    if existing and existing:FindFirstChild("main") and deleteprevious then
+        tp(existing.main, existing.main.Position + UDim2.new(0, 0, 2, 0), 0.5)
+        game:GetService("Debris"):AddItem(existing, 1)
+    end
+
+    -- create new ScreenGui
+    scrgui = Instance.new("ScreenGui")
+    scrgui.Parent = cg
+end
+
         
     
     
